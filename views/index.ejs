@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+ <body>
+    <h1>Form Film</h1>
+    <form method="POST" action="/movies" enctype="multipart/form-data">
+        <div>
+            <label for="title">Judul Film:</label>
+            <input type="text" id="title" name="title" placeholder="Masukkan judul film" required>
+        </div>
+        <div>
+            <label for="genres">Genre:</label>
+            <input type="text" id="genres" name="genres" placeholder="Masukkan genre film" required>
+        </div>
+        <div>
+            <label for="year">Tahun Rilis:</label>
+            <input type="text" id="year" name="year" placeholder="Masukkan tahun rilis" required>
+        </div>
+        <div>
+            <label for="photo">Foto:</label>
+            <input type="file" id="photo" name="photo" accept="image/*" required>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+      function showSubmittedData(event) {
+          event.preventDefault();
+  
+          var title = document.getElementById('title').value;
+          var genres = document.getElementById('genres').value;
+          var year = document.getElementById('year').value;
+          var photo = document.getElementById('photo').files[0];
+  
+          document.getElementById('submitted-title').textContent = title;
+          document.getElementById('submitted-genres').textContent = genres;
+          document.getElementById('submitted-year').textContent = year;
+  
+          var photoElement = document.getElementById('submitted-photo');
+          photoElement.src = URL.createObjectURL(photo);
+          photoElement.style.display = 'block';
+  
+          // Mengirim permintaan AJAX (gunakan jQuery atau fetch API)
+          var formData = new FormData();
+          formData.append('title', title);
+          formData.append('genres', genres);
+          formData.append('year', year);
+          formData.append('photo', photo);
+          
+          fetch('/movies', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              var successMessage = document.createElement('p');
+              successMessage.textContent = 'Success!';
+              successMessage.style.color = 'green';
+              document.getElementById('submitted-data').appendChild(successMessage);
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+  
+          document.getElementById('submitted-data').style.display = 'block';
+      }
+  </script>
+  
+</body>
+</html>
